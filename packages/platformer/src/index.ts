@@ -1,39 +1,26 @@
-/**
- * Vendor
- */
-
 import Phaser from 'phaser';
 
-/**
- * Assets
- */
-
-import logoImg from './assets/logo.png';
-
-/**
- * Life cycles handlers
- */
+import bombImg from './assets/bomb.png';
+import platformImg from './assets/platform.png';
+import dudeImg from './assets/dude.png';
+import skyImg from './assets/sky.png';
+import starImg from './assets/star.png';
 
 function preload(this: any) {
-  this.load.image('logo', logoImg);
-}
-
-function create(this: any) {
-  const logo = this.add.image(400, 150, 'logo');
-
-  this.tweens.add({
-    targets: logo,
-    y: 450,
-    duration: 2000,
-    ease: 'Power2',
-    yoyo: true,
-    loop: -1,
+  this.load.image('bomb', bombImg);
+  this.load.image('platform', platformImg);
+  this.load.image('sky', skyImg);
+  this.load.image('star', starImg);
+  this.load.spritesheet('dude', dudeImg, {
+    frameWidth: 32,
+    frameHeight: 32
   });
 }
 
-/**
- * Bootstrap
- */
+function create(this: any) {
+  this.add.image(400, 300, 'sky');
+  this.add.image(400, 300, 'star');
+}
 
 const config = {
   type: Phaser.AUTO,
