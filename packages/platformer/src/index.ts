@@ -37,6 +37,8 @@ function create(this: Phaser.Scene) {
 
   player.setBounce(0.2);
   player.setCollideWorldBounds(true);
+  
+  this.physics.add.collider(player, platforms);
 
   this.anims.create({
       key: 'left',
