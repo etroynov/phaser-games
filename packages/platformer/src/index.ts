@@ -6,9 +6,7 @@ import dudeImg from './assets/dude.png';
 import skyImg from './assets/sky.png';
 import starImg from './assets/star.png';
 
-let platforms;
-
-function preload(this: any) {
+function preload(this: Phaser.Scene) {
   this.load.image('bomb', bombImg);
   this.load.image('platform', platformImg);
   this.load.image('sky', skyImg);
@@ -19,16 +17,9 @@ function preload(this: any) {
   });
 }
 
-function create(this: any) {
+function create(this: Phaser.Scene) {
   this.add.image(400, 300, 'sky');
-
-  platforms = this.physics.add.staticGroup();
-
-  platforms.create(400, 568, 'platform').setScale(2).refreshBody();
-
-  platforms.create(600, 400, 'platform');
-  platforms.create(50, 250, 'platform');
-  platforms.create(750, 220, 'platform');
+  this.add.image(400, 300, 'star');
 }
 
 const config = {
