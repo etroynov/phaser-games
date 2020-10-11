@@ -6,8 +6,9 @@ import dudeImg from './assets/dude.png';
 import skyImg from './assets/sky.png';
 import starImg from './assets/star.png';
 
-let player;
-let platforms;
+let player: any;
+let platforms: any;
+let cursors: any;
 
 function preload(this: Phaser.Scene) {
   this.load.image('bomb', bombImg);
@@ -40,6 +41,8 @@ function create(this: Phaser.Scene) {
   
   this.physics.add.collider(player, platforms);
 
+  cursors = this.input.keyboard.createCursorKeys();
+
   this.anims.create({
       key: 'left',
       frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 3 }),
@@ -61,6 +64,32 @@ function create(this: Phaser.Scene) {
   });
 }
 
+function update() {
+  if (cursors.left.isDown)
+  {
+      player.setVelocityX(-160);
+
+      player.anims.play('left', true);
+  }
+  else if (cursors.right.isDown)
+  {
+      player.setVelocityX(160);
+
+      player.anims.play('right', true);
+  }
+  else
+  {
+      player.setVelocityX(0);
+
+      player.anims.play('turn');
+  }
+
+  if (cursors.up.isDown && player.body.touching.down)
+  {
+      player.setVelocityY(-330);
+  }
+}
+
 const config = {
   type: Phaser.AUTO,
   parent: 'phaser-example',
@@ -69,6 +98,7 @@ const config = {
   scene: {
     preload,
     create,
+    update,
   },
   physics: {
     default: 'arcade',
