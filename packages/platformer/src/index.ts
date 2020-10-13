@@ -9,6 +9,7 @@ import starImg from './assets/star.png';
 let player: any;
 let platforms: any;
 let cursors: any;
+let stars: any;
 
 function preload(this: Phaser.Scene) {
   this.load.image('bomb', bombImg);
@@ -19,6 +20,11 @@ function preload(this: Phaser.Scene) {
     frameWidth: 32,
     frameHeight: 48,
   });
+}
+
+function collectStar (player, star)
+{
+    star.disableBody(true, true);
 }
 
 function create(this: Phaser.Scene) {
@@ -34,14 +40,22 @@ function create(this: Phaser.Scene) {
   player.setCollideWorldBounds(true);
   player.setBounce(0.2);
 
-  player = this.physics.add.sprite(100, 450, 'dude');
-
-  player.setBounce(0.2);
-  player.setCollideWorldBounds(true);
-  
-  this.physics.add.collider(player, platforms);
 
   cursors = this.input.keyboard.createCursorKeys();
+
+  stars = this.physics.add.group({
+    key: 'star',
+    repeat: 11,
+    setXY: { x: 12, y: 0, stepX: 70 }
+  });
+
+  stars.children.iterate(function (child: any) {
+      child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
+  });
+
+  this.physics.add.collider(stars, platforms);
+  this.physics.add.collider(player, platforms);
+  this.physics.add.overlap(player, stars, collectStar, undefined, this);
 
   this.anims.create({
       key: 'left',
