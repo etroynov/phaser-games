@@ -10,6 +10,8 @@ let player: any;
 let platforms: any;
 let cursors: any;
 let stars: any;
+let score: number = 0;
+let scoreText: Phaser.GameObjects.Text;
 
 function preload(this: Phaser.Scene) {
   this.load.image('bomb', bombImg);
@@ -25,6 +27,8 @@ function preload(this: Phaser.Scene) {
 function collectStar (player, star)
 {
     star.disableBody(true, true);
+    score += 10;
+    scoreText.setText(`score: ${ score }`);
 }
 
 function create(this: Phaser.Scene) {
@@ -40,6 +44,7 @@ function create(this: Phaser.Scene) {
   player.setCollideWorldBounds(true);
   player.setBounce(0.2);
 
+  scoreText = this.add.text(16, 16, 'score: 0', { fontSize: 32 });
 
   cursors = this.input.keyboard.createCursorKeys();
 
