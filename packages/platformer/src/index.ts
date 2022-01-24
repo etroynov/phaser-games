@@ -1,10 +1,14 @@
 import Phaser from 'phaser';
 
-import bombImg from './assets/bomb.png';
-import platformImg from './assets/platform.png';
-import dudeImg from './assets/dude.png';
-import skyImg from './assets/sky.png';
-import starImg from './assets/star.png';
+import bombImg from './assets/img/bomb.png';
+import platformImg from './assets/img/platform.png';
+import dudeImg from './assets/img/dude.png';
+import skyImg from './assets/img/sky.png';
+import starImg from './assets/img/star.png';
+
+import LevelSound from './assets/sounds/level.mp3';
+import CollectSound from './assets/sounds/collect.wav';
+
 
 let player: any;
 let platforms: any;
@@ -16,10 +20,17 @@ let gameOver: boolean = false;
 let scoreText: Phaser.GameObjects.Text;
 
 function preload(this: Phaser.Scene) {
+  // Sound
+  this.load.audio('collect', [CollectSound]);
+  this.load.audio('level', [LevelSound]);
+
+  // Images
   this.load.image('bomb', bombImg);
   this.load.image('platform', platformImg);
   this.load.image('sky', skyImg);
   this.load.image('star', starImg);
+
+  // Spritesheets
   this.load.spritesheet('dude', dudeImg, {
     frameWidth: 32,
     frameHeight: 48,
@@ -50,6 +61,13 @@ function collectStar(player, star) {
 }
 
 function create(this: Phaser.Scene) {
+  const music = this.sound.add('collect');
+  const levelSound = this.sound.add('level');
+
+  if (!levelSound.isPlaying) {
+    levelSound.play();
+  }
+
   this.add.image(400, 300, 'sky');
 
   bombs = this.physics.add.group();
@@ -63,7 +81,7 @@ function create(this: Phaser.Scene) {
   player.setCollideWorldBounds(true);
   player.setBounce(0.2);
 
-  scoreText = this.add.text(16, 16, 'score: 0', { fontSize: 32 });
+  scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px' });
 
   cursors = this.input.keyboard.createCursorKeys();
 
@@ -80,6 +98,7 @@ function create(this: Phaser.Scene) {
   this.physics.add.collider(bombs, platforms);
   this.physics.add.collider(stars, platforms);
   this.physics.add.collider(player, platforms);
+
   this.physics.add.collider(player, bombs, () => {
     this.physics.pause();
     player.setTint(0xff0000);
@@ -87,7 +106,11 @@ function create(this: Phaser.Scene) {
 
     gameOver = true;
   }, undefined, this);
-  this.physics.add.overlap(player, stars, collectStar, undefined, this);
+
+  this.physics.add.overlap(player, stars, (x, y) => {
+    collectStar(x, y);
+    music.play();
+  }, undefined, this);
 
   this.anims.create({
     key: 'left',
@@ -149,5 +172,4 @@ const config = {
   },
 };
 
-// eslint-disable-next-line no-unused-vars
-const game = new Phaser.Game(config);
+new Phaser.Game(config);
